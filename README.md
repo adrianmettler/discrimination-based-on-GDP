@@ -1,2 +1,2 @@
 # discrimination-based-on-GDP
-This repository offers the datasets and codes underlying our empirical research on how the wealth of immigrants’ countries of origin affects their self-perceived discrimination.
+This repository offers the Stata do-files and log-files underlying our empirical research on how the economic welfare of immigrants’ countries of origin and related factors affect discrimination of immigrants.
