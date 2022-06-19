@@ -1,0 +1,1801 @@
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/silja/Desktop/Empirical Research Paper_19June22/DataAnalysis.log
+  log type:  text
+ opened on:  19 Jun 2022, 10:49:04
+
+. 
+. use "ESS_WorldBank_data.dta", clear
+
+. 
+. 
+. ***********************
+. * Step 2: data analysis
+. ***********************
+. 
+. 
+. * 2.1: logistic regression analysis, marginal plots
+. ***************************************************
+. 
+. 
+. /*
+> There are a number of variables we intend to integrate into the logistic regression analysis.
+> 
+> Firstly, the relevant dependent variable is "discriminated" for the analysis over all years and "discriminated2002",
+> "discriminated2004", etc. for the regression analysis over one specific year. These are dummy variables we
+> have previously created using the variable dscrgrp ("Member of a group discriminated against in this country"; 1=yes, 0=no).
+> 
+> Secondly, the relevant independent variable is "gdp_t" for the analysis over all years and "gdp2002_t",
+> "gdp2004_t", etc. for the regression analysis over one specific year.
+> 
+> Thirdly, we included several control variables. We tried to include variables that might induce
+> discrimination based on perceived economic threats and perceived cultural threats. From a wide
+> range of potential variables we selected
+> - for the analysis over all years:
+>         "education"
+>         "traditions"
+>         "stayduration"
+>         
+>         Here, we couldn't include the variable of net household income as it was measured in different ways
+>         before and after the fourth survey wave (see do-file "data preparation").
+>         
+> - for the analysis over one specific year (2002, 2004, etc.):
+>         "education"
+>         "traditions"
+>         "income_t"
+>         "stayduration"
+> */
+. 
+. 
+. 
+. * 2.1.1: analysis over all survey years
+. ***************************************
+. 
+. logit discriminated gdp_t education traditions i.stayduration essround
+
+Iteration 0:   log likelihood = -3204.8197  
+Iteration 1:   log likelihood = -3040.7208  
+Iteration 2:   log likelihood = -3025.3612  
+Iteration 3:   log likelihood = -3025.3065  
+Iteration 4:   log likelihood = -3025.3065  
+
+Logistic regression                                     Number of obs =  8,367
+                                                        LR chi2(8)    = 359.03
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -3025.3065                             Pseudo R2     = 0.0560
+
+-----------------------------------------------------------------------------------------
+          discriminated | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+                  gdp_t |  -.0426936   .0031222   -13.67   0.000    -.0488129   -.0365742
+              education |  -.0095551   .0179451    -0.53   0.594    -.0447268    .0256167
+             traditions |   .0364323   .0255923     1.42   0.155    -.0137276    .0865922
+                        |
+           stayduration |
+         1-5 years ago  |  -.2577321   .3111562    -0.83   0.407     -.867587    .3521228
+        6-10 years ago  |   -.347436   .3110224    -1.12   0.264    -.9570286    .2621567
+       11-20 years ago  |  -.6348267   .3072392    -2.07   0.039    -1.237004   -.0326489
+More than 20 years ago  |   -.849377   .3017296    -2.82   0.005    -1.440756   -.2579978
+                        |
+               essround |   .1398086    .029895     4.68   0.000     .0812155    .1984016
+                  _cons |  -1.232155    .345848    -3.56   0.000    -1.910005   -.5543054
+-----------------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 8,367
+Model VCE: OIM
+
+Expression: Pr(discriminated), predict()
+dy/dx wrt:  gdp_t education traditions 2.stayduration 3.stayduration 4.stayduration 5.stayduration essround
+
+-----------------------------------------------------------------------------------------
+                        |            Delta-method
+                        |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+                  gdp_t |  -.0045818    .000339   -13.51   0.000    -.0052463   -.0039174
+              education |  -.0010254   .0019258    -0.53   0.594       -.0048    .0027491
+             traditions |   .0039099   .0027463     1.42   0.155    -.0014728    .0092926
+                        |
+           stayduration |
+         1-5 years ago  |   -.038837   .0496339    -0.78   0.434    -.1361176    .0584437
+        6-10 years ago  |  -.0510812   .0494591    -1.03   0.302    -.1480193    .0458568
+       11-20 years ago  |   -.085973   .0487276    -1.76   0.078    -.1814772    .0095313
+More than 20 years ago  |  -.1079194   .0482301    -2.24   0.025    -.2024486   -.0133901
+                        |
+               essround |   .0150041   .0032079     4.68   0.000     .0087167    .0212915
+-----------------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. est store m_obverall
+
+. 
+. * creating a graph: marginsplot
+. margins, at(gdp_t=(0(5)125))    
+
+Predictive margins                                       Number of obs = 8,367
+Model VCE: OIM
+
+Expression: Pr(discriminated), predict()
+1._at:  gdp_t =   0
+2._at:  gdp_t =   5
+3._at:  gdp_t =  10
+4._at:  gdp_t =  15
+5._at:  gdp_t =  20
+6._at:  gdp_t =  25
+7._at:  gdp_t =  30
+8._at:  gdp_t =  35
+9._at:  gdp_t =  40
+10._at: gdp_t =  45
+11._at: gdp_t =  50
+12._at: gdp_t =  55
+13._at: gdp_t =  60
+14._at: gdp_t =  65
+15._at: gdp_t =  70
+16._at: gdp_t =  75
+17._at: gdp_t =  80
+18._at: gdp_t =  85
+19._at: gdp_t =  90
+20._at: gdp_t =  95
+21._at: gdp_t = 100
+22._at: gdp_t = 105
+23._at: gdp_t = 110
+24._at: gdp_t = 115
+25._at: gdp_t = 120
+26._at: gdp_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1983162   .0071091    27.90   0.000     .1843826    .2122498
+          2  |   .1669275   .0050339    33.16   0.000     .1570612    .1767937
+          3  |   .1396019   .0039785    35.09   0.000     .1318041    .1473997
+          4  |   .1160933   .0037891    30.64   0.000     .1086668    .1235197
+          5  |   .0960755   .0039917    24.07   0.000      .088252     .103899
+          6  |   .0791803   .0042183    18.77   0.000     .0709125    .0874481
+          7  |   .0650276    .004329    15.02   0.000      .056543    .0735123
+          8  |   .0532477   .0043016    12.38   0.000     .0448166    .0616787
+          9  |   .0434948   .0041566    10.46   0.000      .035348    .0516415
+         10  |   .0354559   .0039252     9.03   0.000     .0277628    .0431491
+         11  |   .0288544   .0036379     7.93   0.000     .0217242    .0359846
+         12  |   .0234495   .0033205     7.06   0.000     .0169415    .0299576
+         13  |   .0190355   .0029927     6.36   0.000     .0131699    .0249011
+         14  |   .0154381   .0026691     5.78   0.000     .0102068    .0206694
+         15  |   .0125111   .0023595     5.30   0.000     .0078866    .0171356
+         16  |   .0101328   .0020702     4.89   0.000     .0060753    .0141903
+         17  |   .0082025   .0018048     4.54   0.000     .0046653    .0117398
+         18  |   .0066372   .0015646     4.24   0.000     .0035706    .0097039
+         19  |   .0053689     .00135     3.98   0.000      .002723    .0080148
+         20  |   .0043418   .0011598     3.74   0.000     .0020685     .006615
+         21  |   .0035104   .0009928     3.54   0.000     .0015646    .0054563
+         22  |   .0028377    .000847     3.35   0.001     .0011776    .0044978
+         23  |   .0022936   .0007205     3.18   0.001     .0008814    .0037058
+         24  |   .0018536   .0006113     3.03   0.002     .0006555    .0030518
+         25  |   .0014979   .0005174     2.89   0.004     .0004838     .002512
+         26  |   .0012104    .000437     2.77   0.006     .0003538    .0020669
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin", size
+> (medlarge)) legend(off) saving(gdp_discriminated_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp_t
+file gdp_discriminated_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.2: analysis over survey year 2002
+. ***************************************
+. 
+. logit discriminated2002 gdp2002_t education traditions income_t i.stayduration
+
+Iteration 0:   log likelihood = -440.57531  
+Iteration 1:   log likelihood = -418.38003  
+Iteration 2:   log likelihood = -415.02675  
+Iteration 3:   log likelihood = -414.99408  
+Iteration 4:   log likelihood = -414.99406  
+
+Logistic regression                                     Number of obs =  1,388
+                                                        LR chi2(8)    =  51.16
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -414.99406                             Pseudo R2     = 0.0581
+
+-----------------------------------------------------------------------------------------
+      discriminated2002 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+              gdp2002_t |  -.0318294   .0080455    -3.96   0.000    -.0475983   -.0160605
+              education |  -.0574675   .0535914    -1.07   0.284    -.1625048    .0475697
+             traditions |   .0037241   .0662194     0.06   0.955    -.1260635    .1335117
+               income_t |  -.0033977   .0039645    -0.86   0.391    -.0111681    .0043726
+                        |
+           stayduration |
+         1-5 years ago  |  -.9055049   .7592802    -1.19   0.233    -2.393667    .5826569
+        6-10 years ago  |  -1.205077   .7656681    -1.57   0.116    -2.705759    .2956048
+       11-20 years ago  |  -1.062102   .7465737    -1.42   0.155    -2.525359    .4011557
+More than 20 years ago  |  -1.813863   .7350256    -2.47   0.014    -3.254486   -.3732392
+                        |
+                  _cons |  -.0784638   .8441178    -0.09   0.926    -1.732904    1.575977
+-----------------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 1,388
+Model VCE: OIM
+
+Expression: Pr(discriminated2002), predict()
+dy/dx wrt:  gdp2002_t education traditions income_t 2.stayduration 3.stayduration 4.stayduration 5.stayduration
+
+-----------------------------------------------------------------------------------------
+                        |            Delta-method
+                        |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+              gdp2002_t |  -.0026705   .0006873    -3.89   0.000    -.0040176   -.0013234
+              education |  -.0048216   .0044999    -1.07   0.284    -.0136412     .003998
+             traditions |   .0003125   .0055559     0.06   0.955    -.0105769    .0112018
+               income_t |  -.0002851   .0003329    -0.86   0.392    -.0009375    .0003673
+                        |
+           stayduration |
+         1-5 years ago  |  -.1486171   .1471592    -1.01   0.313    -.4370439    .1398096
+        6-10 years ago  |  -.1829407    .146579    -1.25   0.212    -.4702302    .1043487
+       11-20 years ago  |  -.1674387   .1458495    -1.15   0.251    -.4532984    .1184211
+More than 20 years ago  |  -.2330916   .1445322    -1.61   0.107    -.5163695    .0501862
+-----------------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. est store m_2002
+
+. 
+. * creating a graph: marginsplot
+. margins, at(gdp2002_t=(0(5)125))        
+
+Predictive margins                                       Number of obs = 1,388
+Model VCE: OIM
+
+Expression: Pr(discriminated2002), predict()
+1._at:  gdp2002_t =   0
+2._at:  gdp2002_t =   5
+3._at:  gdp2002_t =  10
+4._at:  gdp2002_t =  15
+5._at:  gdp2002_t =  20
+6._at:  gdp2002_t =  25
+7._at:  gdp2002_t =  30
+8._at:  gdp2002_t =  35
+9._at:  gdp2002_t =  40
+10._at: gdp2002_t =  45
+11._at: gdp2002_t =  50
+12._at: gdp2002_t =  55
+13._at: gdp2002_t =  60
+14._at: gdp2002_t =  65
+15._at: gdp2002_t =  70
+16._at: gdp2002_t =  75
+17._at: gdp2002_t =  80
+18._at: gdp2002_t =  85
+19._at: gdp2002_t =  90
+20._at: gdp2002_t =  95
+21._at: gdp2002_t = 100
+22._at: gdp2002_t = 105
+23._at: gdp2002_t = 110
+24._at: gdp2002_t = 115
+25._at: gdp2002_t = 120
+26._at: gdp2002_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1349863   .0142694     9.46   0.000     .1070188    .1629538
+          2  |   .1178042   .0104525    11.27   0.000     .0973177    .1382907
+          3  |   .1025204   .0084447    12.14   0.000     .0859691    .1190716
+          4  |   .0889945   .0080626    11.04   0.000      .073192     .104797
+          5  |   .0770794   .0085786     8.99   0.000     .0602657    .0938932
+          6  |   .0666262   .0093083     7.16   0.000     .0483823    .0848701
+          7  |   .0574889   .0099169     5.80   0.000     .0380522    .0769256
+          8  |   .0495275   .0102957     4.81   0.000     .0293482    .0697068
+          9  |   .0426105   .0104349     4.08   0.000     .0221584    .0630626
+         10  |   .0366158   .0103619     3.53   0.000     .0163069    .0569247
+         11  |   .0314318   .0101159     3.11   0.002     .0116049    .0512587
+         12  |   .0269573   .0097374     2.77   0.006     .0078723    .0460423
+         13  |   .0231017   .0092631     2.49   0.013     .0049464    .0412571
+         14  |   .0197842   .0087246     2.27   0.023     .0026842    .0368841
+         15  |   .0169331   .0081482     2.08   0.038     .0009629    .0329033
+         16  |   .0144856   .0075548     1.92   0.055    -.0003216    .0292927
+         17  |   .0123864   .0069608     1.78   0.075    -.0012564    .0260293
+         18  |   .0105875   .0063784     1.66   0.097    -.0019139     .023089
+         19  |    .009047   .0058168     1.56   0.120    -.0023537    .0204477
+         20  |   .0077285   .0052822     1.46   0.143    -.0026245    .0180815
+         21  |   .0066006   .0047788     1.38   0.167    -.0027657    .0159668
+         22  |   .0056361   .0043089     1.31   0.191    -.0028091    .0140814
+         23  |   .0048118   .0038735     1.24   0.214    -.0027802    .0124037
+         24  |   .0041074   .0034727     1.18   0.237     -.002699    .0109138
+         25  |   .0035057   .0031058     1.13   0.259    -.0025816    .0095929
+         26  |   .0029918   .0027715     1.08   0.280    -.0024403    .0084238
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin 2002",
+>  size(medlarge)) legend(off) saving(gdp2002_discriminated2002_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp2002_t
+file gdp2002_discriminated2002_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.3: analysis over survey year 2004
+. ***************************************
+. 
+. logit discriminated2004 gdp2004_t education traditions income_t i.stayduration
+
+Iteration 0:   log likelihood = -419.74166  
+Iteration 1:   log likelihood = -386.83376  
+Iteration 2:   log likelihood = -382.22989  
+Iteration 3:   log likelihood = -382.20592  
+Iteration 4:   log likelihood = -382.20591  
+
+Logistic regression                                     Number of obs =  1,315
+                                                        LR chi2(8)    =  75.07
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -382.20591                             Pseudo R2     = 0.0894
+
+-----------------------------------------------------------------------------------------
+      discriminated2004 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+              gdp2004_t |   -.043217   .0079792    -5.42   0.000    -.0588559   -.0275781
+              education |   .0119966   .0511926     0.23   0.815     -.088339    .1123323
+             traditions |   .1225048    .076655     1.60   0.110    -.0277362    .2727458
+               income_t |  -.0013711   .0034715    -0.39   0.693    -.0081751    .0054329
+                        |
+           stayduration |
+         1-5 years ago  |  -.9401337   .7341632    -1.28   0.200    -2.379067    .4987996
+        6-10 years ago  |  -.9018091   .7394477    -1.22   0.223      -2.3511    .5474818
+       11-20 years ago  |  -1.520123   .7294365    -2.08   0.037    -2.949792   -.0904537
+More than 20 years ago  |  -1.886895   .7232682    -2.61   0.009    -3.304474   -.4693151
+                        |
+                  _cons |  -.6304072   .7966915    -0.79   0.429    -2.191894    .9310795
+-----------------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 1,315
+Model VCE: OIM
+
+Expression: Pr(discriminated2004), predict()
+dy/dx wrt:  gdp2004_t education traditions income_t 2.stayduration 3.stayduration 4.stayduration 5.stayduration
+
+-----------------------------------------------------------------------------------------
+                        |            Delta-method
+                        |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+              gdp2004_t |  -.0035665   .0006744    -5.29   0.000    -.0048883   -.0022447
+              education |     .00099   .0042248     0.23   0.815    -.0072904    .0092704
+             traditions |   .0101098   .0063324     1.60   0.110    -.0023016    .0225212
+               income_t |  -.0001132   .0002865    -0.39   0.693    -.0006747    .0004484
+                        |
+           stayduration |
+         1-5 years ago  |  -.1467429   .1355645    -1.08   0.279    -.4124444    .1189585
+        6-10 years ago  |  -.1420736   .1360833    -1.04   0.296    -.4087919    .1246448
+       11-20 years ago  |  -.2045229   .1340784    -1.53   0.127    -.4673118     .058266
+More than 20 years ago  |  -.2301018    .133576    -1.72   0.085     -.491906    .0317024
+-----------------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. est store m_2004
+
+. 
+. * creating a graph: marginsplot
+. margins, at(gdp2004_t=(0(5)125))
+
+Predictive margins                                       Number of obs = 1,315
+Model VCE: OIM
+
+Expression: Pr(discriminated2004), predict()
+1._at:  gdp2004_t =   0
+2._at:  gdp2004_t =   5
+3._at:  gdp2004_t =  10
+4._at:  gdp2004_t =  15
+5._at:  gdp2004_t =  20
+6._at:  gdp2004_t =  25
+7._at:  gdp2004_t =  30
+8._at:  gdp2004_t =  35
+9._at:  gdp2004_t =  40
+10._at: gdp2004_t =  45
+11._at: gdp2004_t =  50
+12._at: gdp2004_t =  55
+13._at: gdp2004_t =  60
+14._at: gdp2004_t =  65
+15._at: gdp2004_t =  70
+16._at: gdp2004_t =  75
+17._at: gdp2004_t =  80
+18._at: gdp2004_t =  85
+19._at: gdp2004_t =  90
+20._at: gdp2004_t =  95
+21._at: gdp2004_t = 100
+22._at: gdp2004_t = 105
+23._at: gdp2004_t = 110
+24._at: gdp2004_t = 115
+25._at: gdp2004_t = 120
+26._at: gdp2004_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1707847   .0192797     8.86   0.000     .1329972    .2085723
+          2  |   .1431561   .0136944    10.45   0.000     .1163156    .1699966
+          3  |   .1192694   .0101803    11.72   0.000     .0993164    .1392224
+          4  |   .0988392   .0086221    11.46   0.000     .0819402    .1157383
+          5  |   .0815299   .0083547     9.76   0.000     .0651549    .0979049
+          6  |   .0669848    .008539     7.84   0.000     .0502486     .083721
+          7  |   .0548485   .0086842     6.32   0.000     .0378279    .0718691
+          8  |   .0447829   .0086253     5.19   0.000     .0278776    .0616883
+          9  |   .0364772   .0083515     4.37   0.000     .0201086    .0528458
+         10  |   .0296527   .0079056     3.75   0.000      .014158    .0451474
+         11  |   .0240654   .0073425     3.28   0.001     .0096742    .0384565
+         12  |   .0195043   .0067127     2.91   0.004     .0063477    .0326609
+         13  |   .0157901   .0060568     2.61   0.009      .003919    .0276611
+         14  |   .0127715   .0054053     2.36   0.018     .0021773    .0233656
+         15  |   .0103223   .0047795     2.16   0.031     .0009547    .0196899
+         16  |   .0083377   .0041931     1.99   0.047     .0001194    .0165561
+         17  |   .0067314   .0036541     1.84   0.065    -.0004304    .0138932
+         18  |   .0054324   .0031659     1.72   0.086    -.0007727    .0116375
+         19  |   .0043826   .0027292     1.61   0.108    -.0009666    .0097319
+         20  |   .0035348   .0023425     1.51   0.131    -.0010564     .008126
+         21  |   .0028504   .0020028     1.42   0.155     -.001075    .0067757
+         22  |   .0022981   .0017065     1.35   0.178    -.0010465    .0056427
+         23  |   .0018526   .0014496     1.28   0.201    -.0009885    .0046937
+         24  |   .0014932    .001228     1.22   0.224    -.0009135       .0039
+         25  |   .0012035   .0010377     1.16   0.246    -.0008303    .0032374
+         26  |   .0009699    .000875     1.11   0.268     -.000745    .0026848
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin 2004",
+>  size(medlarge)) legend(off) saving(gdp2004_discriminated2004_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp2004_t
+file gdp2004_discriminated2004_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.4: analysis over survey year 2006
+. ***************************************
+. 
+. logit discriminated2006 gdp2006_t education traditions income_t i.stayduration
+
+note: 1.stayduration != 0 predicts failure perfectly;
+      1.stayduration omitted and 13 obs not used.
+
+note: 5.stayduration omitted because of collinearity.
+Iteration 0:   log likelihood = -439.99878  
+Iteration 1:   log likelihood = -407.86799  
+Iteration 2:   log likelihood = -402.30709  
+Iteration 3:   log likelihood = -402.22517  
+Iteration 4:   log likelihood = -402.22515  
+
+Logistic regression                                     Number of obs =  1,264
+                                                        LR chi2(7)    =  75.55
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -402.22515                             Pseudo R2     = 0.0858
+
+-----------------------------------------------------------------------------------------
+      discriminated2006 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+              gdp2006_t |   -.048908   .0089026    -5.49   0.000    -.0663569   -.0314592
+              education |  -.0393382   .0492161    -0.80   0.424       -.1358    .0571236
+             traditions |  -.0185724   .0702356    -0.26   0.791    -.1562315    .1190868
+               income_t |  -.0021757   .0038305    -0.57   0.570    -.0096834     .005332
+                        |
+           stayduration |
+      Within last year  |          0  (empty)
+         1-5 years ago  |   .4833528   .2938942     1.64   0.100    -.0926691    1.059375
+        6-10 years ago  |   1.042505   .2465163     4.23   0.000     .5593419    1.525668
+       11-20 years ago  |   .3201704    .238425     1.34   0.179     -.147134    .7874749
+More than 20 years ago  |          0  (omitted)
+                        |
+                  _cons |  -1.503442   .4074724    -3.69   0.000    -2.302073   -.7048107
+-----------------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 1,264
+Model VCE: OIM
+
+Expression: Pr(discriminated2006), predict()
+dy/dx wrt:  gdp2006_t education traditions income_t 2.stayduration 3.stayduration 4.stayduration 5.stayduration
+
+-----------------------------------------------------------------------------------------
+                        |            Delta-method
+                        |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+              gdp2006_t |  -.0045352   .0008443    -5.37   0.000      -.00619   -.0028804
+              education |  -.0036478   .0045628    -0.80   0.424    -.0125907    .0052951
+             traditions |  -.0017222    .006513    -0.26   0.791    -.0144873     .011043
+               income_t |  -.0002018   .0003552    -0.57   0.570     -.000898    .0004945
+                        |
+           stayduration |
+      Within last year  |          0  (empty)
+         1-5 years ago  |          .  (not estimable)
+        6-10 years ago  |          .  (not estimable)
+       11-20 years ago  |          .  (not estimable)
+More than 20 years ago  |          .  (not estimable)
+-----------------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. est store m_2006
+
+. 
+. * creating a graph: marginsplot
+. margins, at(gdp2006_t=(0(5)125))
+
+Predictive margins                                       Number of obs = 1,264
+Model VCE: OIM
+
+Expression: Pr(discriminated2006), predict()
+1._at:  gdp2006_t =   0
+2._at:  gdp2006_t =   5
+3._at:  gdp2006_t =  10
+4._at:  gdp2006_t =  15
+5._at:  gdp2006_t =  20
+6._at:  gdp2006_t =  25
+7._at:  gdp2006_t =  30
+8._at:  gdp2006_t =  35
+9._at:  gdp2006_t =  40
+10._at: gdp2006_t =  45
+11._at: gdp2006_t =  50
+12._at: gdp2006_t =  55
+13._at: gdp2006_t =  60
+14._at: gdp2006_t =  65
+15._at: gdp2006_t =  70
+16._at: gdp2006_t =  75
+17._at: gdp2006_t =  80
+18._at: gdp2006_t =  85
+19._at: gdp2006_t =  90
+20._at: gdp2006_t =  95
+21._at: gdp2006_t = 100
+22._at: gdp2006_t = 105
+23._at: gdp2006_t = 110
+24._at: gdp2006_t = 115
+25._at: gdp2006_t = 120
+26._at: gdp2006_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1814941   .0182484     9.95   0.000     .1457279    .2172604
+          2  |    .148614   .0126121    11.78   0.000     .1238948    .1733332
+          3  |   .1207397   .0098554    12.25   0.000     .1014234     .140056
+          4  |   .0974368   .0093006    10.48   0.000     .0792079    .1156657
+          5  |   .0781865   .0095831     8.16   0.000     .0594039    .0969692
+          6  |   .0624434   .0098202     6.36   0.000     .0431961    .0816907
+          7  |   .0496761   .0097415     5.10   0.000     .0305832     .068769
+          8  |   .0393935    .009348     4.21   0.000     .0210718    .0577152
+          9  |   .0311587   .0087216     3.57   0.000     .0140646    .0482528
+         10  |   .0245942   .0079534     3.09   0.002     .0090058    .0401827
+         11  |   .0193804   .0071202     2.72   0.006      .005425    .0333358
+         12  |   .0152517   .0062794     2.43   0.015     .0029443    .0275591
+         13  |   .0119899   .0054701     2.19   0.028     .0012687    .0227111
+         14  |   .0094178   .0047167     2.00   0.046     .0001732    .0186624
+         15  |   .0073926   .0040325     1.83   0.067     -.000511    .0152962
+         16  |   .0057999   .0034227     1.69   0.090    -.0009085    .0125084
+         17  |   .0045485   .0028873     1.58   0.115    -.0011105    .0102075
+         18  |   .0035659   .0024227     1.47   0.141    -.0011825    .0083144
+         19  |   .0027949   .0020235     1.38   0.167    -.0011711     .006761
+         20  |   .0021902   .0016833     1.30   0.193    -.0011091    .0054894
+         21  |    .001716   .0013953     1.23   0.219    -.0010188    .0044508
+         22  |   .0013443    .001153     1.17   0.244    -.0009154    .0036041
+         23  |   .0010531     .00095     1.11   0.268     -.000809    .0029151
+         24  |   .0008249   .0007808     1.06   0.291    -.0007056    .0023553
+         25  |    .000646   .0006403     1.01   0.313    -.0006089     .001901
+         26  |    .000506    .000524     0.97   0.334     -.000521     .001533
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin 2006",
+>  size(medlarge)) legend(off) saving(gdp2006_discriminated2006_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp2006_t
+file gdp2006_discriminated2006_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.5: analysis over survey year 2008
+. ***************************************
+. 
+. logit discriminated2008 gdp2008_t education traditions income_a i.stayduration
+
+Iteration 0:   log likelihood = -898.42451  
+Iteration 1:   log likelihood = -865.97121  
+Iteration 2:   log likelihood = -863.93388  
+Iteration 3:   log likelihood = -863.92808  
+Iteration 4:   log likelihood = -863.92808  
+
+Logistic regression                                     Number of obs =  2,156
+                                                        LR chi2(8)    =  68.99
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -863.92808                             Pseudo R2     = 0.0384
+
+-----------------------------------------------------------------------------------------
+      discriminated2008 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+              gdp2008_t |  -.0364112   .0059188    -6.15   0.000    -.0480117   -.0248106
+              education |   .0016921   .0349148     0.05   0.961    -.0667396    .0701238
+             traditions |   .0085956   .0467143     0.18   0.854    -.0829628     .100154
+               income_a |  -.0057213   .0251955    -0.23   0.820    -.0551035    .0436609
+                        |
+           stayduration |
+         1-5 years ago  |  -.3894891   .5540085    -0.70   0.482    -1.475326    .6963476
+        6-10 years ago  |  -.4779362   .5490479    -0.87   0.384     -1.55405     .598178
+       11-20 years ago  |  -.5589219   .5404957    -1.03   0.301    -1.618274    .5004303
+More than 20 years ago  |   -.990104   .5287053    -1.87   0.061    -2.026347    .0461394
+                        |
+                  _cons |     -.5633   .6085396    -0.93   0.355    -1.756016    .6294158
+-----------------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 2,156
+Model VCE: OIM
+
+Expression: Pr(discriminated2008), predict()
+dy/dx wrt:  gdp2008_t education traditions income_a 2.stayduration 3.stayduration 4.stayduration 5.stayduration
+
+-----------------------------------------------------------------------------------------
+                        |            Delta-method
+                        |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+------------------------+----------------------------------------------------------------
+              gdp2008_t |  -.0044182   .0007198    -6.14   0.000     -.005829   -.0030073
+              education |   .0002053   .0042366     0.05   0.961    -.0080982    .0085089
+             traditions |    .001043   .0056682     0.18   0.854    -.0100666    .0121526
+               income_a |  -.0006942   .0030572    -0.23   0.820    -.0066862    .0052978
+                        |
+           stayduration |
+         1-5 years ago  |  -.0671758   .1025874    -0.65   0.513    -.2682434    .1338918
+        6-10 years ago  |  -.0806061   .1016479    -0.79   0.428    -.2798323    .1186202
+       11-20 years ago  |  -.0923051    .100419    -0.92   0.358    -.2891227    .1045126
+More than 20 years ago  |  -.1452636   .0988104    -1.47   0.142    -.3389283    .0484011
+-----------------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. est store m_2008
+
+. 
+. * creating a graph: marginsplot
+. margins, at(gdp2008_t=(0(5)125))        
+
+Predictive margins                                       Number of obs = 2,156
+Model VCE: OIM
+
+Expression: Pr(discriminated2008), predict()
+1._at:  gdp2008_t =   0
+2._at:  gdp2008_t =   5
+3._at:  gdp2008_t =  10
+4._at:  gdp2008_t =  15
+5._at:  gdp2008_t =  20
+6._at:  gdp2008_t =  25
+7._at:  gdp2008_t =  30
+8._at:  gdp2008_t =  35
+9._at:  gdp2008_t =  40
+10._at: gdp2008_t =  45
+11._at: gdp2008_t =  50
+12._at: gdp2008_t =  55
+13._at: gdp2008_t =  60
+14._at: gdp2008_t =  65
+15._at: gdp2008_t =  70
+16._at: gdp2008_t =  75
+17._at: gdp2008_t =  80
+18._at: gdp2008_t =  85
+19._at: gdp2008_t =  90
+20._at: gdp2008_t =  95
+21._at: gdp2008_t = 100
+22._at: gdp2008_t = 105
+23._at: gdp2008_t = 110
+24._at: gdp2008_t = 115
+25._at: gdp2008_t = 120
+26._at: gdp2008_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .2102908   .0142594    14.75   0.000     .1823429    .2382387
+          2  |   .1819561    .010232    17.78   0.000     .1619017    .2020105
+          3  |   .1566549   .0081233    19.28   0.000     .1407336    .1725762
+          4  |   .1342709   .0078404    17.13   0.000      .118904    .1496378
+          5  |   .1146308   .0085169    13.46   0.000      .097938    .1313237
+          6  |   .0975239   .0093431    10.44   0.000     .0792117    .1158361
+          7  |   .0827186   .0099621     8.30   0.000     .0631934    .1022439
+          8  |   .0699768   .0102808     6.81   0.000     .0498267    .0901268
+          9  |   .0590637   .0103114     5.73   0.000     .0388536    .0792737
+         10  |   .0497557    .010102     4.93   0.000     .0299562    .0695552
+         11  |   .0418451   .0097087     4.31   0.000     .0228163    .0608739
+         12  |   .0351425   .0091851     3.83   0.000     .0171401     .053145
+         13  |   .0294783   .0085771     3.44   0.001     .0126674    .0462891
+         14  |   .0247019   .0079226     3.12   0.002     .0091739    .0402299
+         15  |   .0206818   .0072509     2.85   0.004     .0064703    .0348933
+         16  |   .0173035   .0065843     2.63   0.009     .0043985    .0302084
+         17  |   .0144682   .0059388     2.44   0.015     .0028284    .0261081
+         18  |   .0120914   .0053254     2.27   0.023     .0016537    .0225291
+         19  |   .0101008   .0047512     2.13   0.034     .0007885     .019413
+         20  |   .0084348   .0042201     2.00   0.046     .0001636     .016706
+         21  |   .0070415   .0037336     1.89   0.059    -.0002762    .0143593
+         22  |   .0058769   .0032917     1.79   0.074    -.0005747    .0123286
+         23  |   .0049039   .0028931     1.70   0.090    -.0007665    .0105743
+         24  |   .0040913   .0025357     1.61   0.107    -.0008787    .0090612
+         25  |   .0034128   .0022169     1.54   0.124    -.0009323    .0077579
+         26  |   .0028465   .0019338     1.47   0.141    -.0009436    .0066367
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin 2008",
+>  size(medlarge)) legend(off) saving(gdp2008_discriminated2008_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp2008_t
+file gdp2008_discriminated2008_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.6: analysis over survey year 2010
+. ***************************************
+. 
+. logit discriminated2010 gdp2010_t education traditions income_a // Values for the variable "stayduration" were missing in this wave, therefore, we di
+> dn't include this control variable in this regression.
+
+Iteration 0:   log likelihood = -1203.2685  
+Iteration 1:   log likelihood = -1170.5318  
+Iteration 2:   log likelihood = -1168.7157  
+Iteration 3:   log likelihood = -1168.7114  
+Iteration 4:   log likelihood = -1168.7114  
+
+Logistic regression                                     Number of obs =  3,472
+                                                        LR chi2(4)    =  69.11
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -1168.7114                             Pseudo R2     = 0.0287
+
+-----------------------------------------------------------------------------------
+discriminated2010 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        gdp2010_t |  -.0307745   .0051573    -5.97   0.000    -.0408825   -.0206664
+        education |   .0093365   .0304872     0.31   0.759    -.0504172    .0690903
+       traditions |   .1305623   .0446517     2.92   0.003     .0430465    .2180781
+         income_a |  -.0414799    .022855    -1.81   0.070    -.0862748    .0033151
+            _cons |  -2.181878   .2686361    -8.12   0.000    -2.708395   -1.655361
+-----------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 3,472
+Model VCE: OIM
+
+Expression: Pr(discriminated2010), predict()
+dy/dx wrt:  gdp2010_t education traditions income_a
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   gdp2010_t |  -.0029601    .000503    -5.89   0.000    -.0039459   -.0019742
+   education |    .000898   .0029325     0.31   0.759    -.0048495    .0066456
+  traditions |   .0125583   .0043039     2.92   0.004     .0041227    .0209939
+    income_a |  -.0039898   .0021999    -1.81   0.070    -.0083016     .000322
+------------------------------------------------------------------------------
+
+. est store m_2010
+
+. 
+. * creating a graph: marginsplot
+. margins, at(gdp2010_t=(0(5)125))
+
+Predictive margins                                       Number of obs = 3,472
+Model VCE: OIM
+
+Expression: Pr(discriminated2010), predict()
+1._at:  gdp2010_t =   0
+2._at:  gdp2010_t =   5
+3._at:  gdp2010_t =  10
+4._at:  gdp2010_t =  15
+5._at:  gdp2010_t =  20
+6._at:  gdp2010_t =  25
+7._at:  gdp2010_t =  30
+8._at:  gdp2010_t =  35
+9._at:  gdp2010_t =  40
+10._at: gdp2010_t =  45
+11._at: gdp2010_t =  50
+12._at: gdp2010_t =  55
+13._at: gdp2010_t =  60
+14._at: gdp2010_t =  65
+15._at: gdp2010_t =  70
+16._at: gdp2010_t =  75
+17._at: gdp2010_t =  80
+18._at: gdp2010_t =  85
+19._at: gdp2010_t =  90
+20._at: gdp2010_t =  95
+21._at: gdp2010_t = 100
+22._at: gdp2010_t = 105
+23._at: gdp2010_t = 110
+24._at: gdp2010_t = 115
+25._at: gdp2010_t = 120
+26._at: gdp2010_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1486508   .0092404    16.09   0.000     .1305401    .1667616
+          2  |   .1302939   .0067032    19.44   0.000     .1171558    .1434319
+          3  |   .1138924   .0055172    20.64   0.000      .103079    .1247059
+          4  |   .0993133   .0055158    18.01   0.000     .0885024    .1101241
+          5  |    .086413   .0060861    14.20   0.000     .0744844    .0983415
+          6  |   .0750445   .0067345    11.14   0.000     .0618451    .0882438
+          7  |   .0650618    .007252     8.97   0.000     .0508481    .0792754
+          8  |   .0563235   .0075814     7.43   0.000     .0414643    .0711827
+          9  |   .0486956   .0077252     6.30   0.000     .0335545    .0638368
+         10  |   .0420532   .0077077     5.46   0.000     .0269464      .05716
+         11  |   .0362811    .007559     4.80   0.000     .0214657    .0510965
+         12  |   .0312745    .007309     4.28   0.000     .0169491    .0455998
+         13  |   .0269387   .0069846     3.86   0.000     .0132493    .0406282
+         14  |   .0231892   .0066089     3.51   0.000      .010236    .0361423
+         15  |   .0199504   .0062011     3.22   0.001     .0077964    .0321045
+         16  |   .0171558   .0057769     2.97   0.003     .0058333    .0284782
+         17  |   .0147465   .0053483     2.76   0.006      .004264    .0252289
+         18  |    .012671   .0049248     2.57   0.010     .0030187    .0223234
+         19  |   .0108843   .0045133     2.41   0.016     .0020384    .0197302
+         20  |   .0093471   .0041189     2.27   0.023     .0012741      .01742
+         21  |   .0080251   .0037451     2.14   0.032     .0006849    .0153653
+         22  |   .0068888   .0033938     2.03   0.042      .000237    .0135406
+         23  |   .0059123   .0030664     1.93   0.054    -.0000977    .0119224
+         24  |   .0050736   .0027632     1.84   0.066    -.0003421    .0104893
+         25  |   .0043533   .0024839     1.75   0.080     -.000515    .0092216
+         26  |   .0037348   .0022279     1.68   0.094    -.0006318    .0081014
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin 2010",
+>  size(medlarge)) legend(off) saving(gdp2010_discriminated2010_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp2010_t
+file gdp2010_discriminated2010_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.7: analysis over survey year 2012
+. ***************************************
+. 
+. logit discriminated2012 gdp2012_t education traditions income_a  // Values for the variable "stayduration" were missing in this wave, therefore, we d
+> idn't include this control variable in this regression.
+
+Iteration 0:   log likelihood = -1297.0779  
+Iteration 1:   log likelihood = -1264.4424  
+Iteration 2:   log likelihood = -1262.8011  
+Iteration 3:   log likelihood = -1262.7974  
+Iteration 4:   log likelihood = -1262.7974  
+
+Logistic regression                                     Number of obs =  3,602
+                                                        LR chi2(4)    =  68.56
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -1262.7974                             Pseudo R2     = 0.0264
+
+-----------------------------------------------------------------------------------
+discriminated2012 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        gdp2012_t |  -.0312368   .0045245    -6.90   0.000    -.0401046    -.022369
+        education |   .0601755   .0287914     2.09   0.037     .0037455    .1166056
+       traditions |   .0478577    .039052     1.23   0.220    -.0286828    .1243983
+         income_a |  -.0198871   .0207184    -0.96   0.337    -.0604943    .0207201
+            _cons |  -1.998014   .2425242    -8.24   0.000    -2.473353   -1.522675
+-----------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 3,602
+Model VCE: OIM
+
+Expression: Pr(discriminated2012), predict()
+dy/dx wrt:  gdp2012_t education traditions income_a
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   gdp2012_t |  -.0031636   .0004647    -6.81   0.000    -.0040745   -.0022528
+   education |   .0060945   .0029178     2.09   0.037     .0003758    .0118133
+  traditions |    .004847   .0039561     1.23   0.220    -.0029068    .0126008
+    income_a |  -.0020142   .0020986    -0.96   0.337    -.0061274    .0020991
+------------------------------------------------------------------------------
+
+. est store m_2012
+
+. 
+. * creating a graph: marginsplot
+. margins, at(gdp2012_t=(0(5)125))
+
+Predictive margins                                       Number of obs = 3,602
+Model VCE: OIM
+
+Expression: Pr(discriminated2012), predict()
+1._at:  gdp2012_t =   0
+2._at:  gdp2012_t =   5
+3._at:  gdp2012_t =  10
+4._at:  gdp2012_t =  15
+5._at:  gdp2012_t =  20
+6._at:  gdp2012_t =  25
+7._at:  gdp2012_t =  30
+8._at:  gdp2012_t =  35
+9._at:  gdp2012_t =  40
+10._at: gdp2012_t =  45
+11._at: gdp2012_t =  50
+12._at: gdp2012_t =  55
+13._at: gdp2012_t =  60
+14._at: gdp2012_t =  65
+15._at: gdp2012_t =  70
+16._at: gdp2012_t =  75
+17._at: gdp2012_t =  80
+18._at: gdp2012_t =  85
+19._at: gdp2012_t =  90
+20._at: gdp2012_t =  95
+21._at: gdp2012_t = 100
+22._at: gdp2012_t = 105
+23._at: gdp2012_t = 110
+24._at: gdp2012_t = 115
+25._at: gdp2012_t = 120
+26._at: gdp2012_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1645902   .0097811    16.83   0.000     .1454196    .1837608
+          2  |   .1442626   .0071938    20.05   0.000     .1301629    .1583622
+          3  |    .126063   .0057774    21.82   0.000     .1147395    .1373865
+          4  |   .1098616   .0054661    20.10   0.000     .0991482    .1205749
+          5  |   .0955122   .0058078    16.45   0.000     .0841291    .1068953
+          6  |   .0828606   .0063295    13.09   0.000      .070455    .0952662
+          7  |   .0717503   .0067846    10.58   0.000     .0584526     .085048
+          8  |   .0620277   .0070876     8.75   0.000     .0481361    .0759192
+          9  |   .0535455   .0072255     7.41   0.000     .0393838    .0677073
+         10  |   .0461655    .007214     6.40   0.000     .0320263    .0603046
+         11  |   .0397592   .0070784     5.62   0.000     .0258858    .0536327
+         12  |   .0342097    .006846     5.00   0.000     .0207918    .0476275
+         13  |   .0294106   .0065418     4.50   0.000      .016589    .0422323
+         14  |    .025267   .0061879     4.08   0.000     .0131388    .0373951
+         15  |   .0216939   .0058029     3.74   0.000     .0103204    .0330674
+         16  |   .0186162   .0054017     3.45   0.001     .0080292    .0292033
+         17  |    .015968   .0049961     3.20   0.001     .0061758    .0257602
+         18  |   .0136912   .0045953     2.98   0.003     .0046846    .0226978
+         19  |    .011735    .004206     2.79   0.005     .0034913    .0199787
+         20  |   .0100555   .0038332     2.62   0.009     .0025425    .0175685
+         21  |   .0086142   .0034801     2.48   0.013     .0017933    .0154351
+         22  |   .0073779   .0031488     2.34   0.019     .0012064    .0135495
+         23  |    .006318   .0028403     2.22   0.026      .000751    .0118849
+         24  |   .0054094   .0025551     2.12   0.034     .0004016    .0104172
+         25  |   .0046309   .0022927     2.02   0.043     .0001372    .0091246
+         26  |    .003964   .0020527     1.93   0.053    -.0000593    .0079872
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin 2012",
+>  size(medlarge)) legend(off) saving(gdp2012_discriminated2012_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp2012_t
+file gdp2012_discriminated2012_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.8: analysis over survey year 2014
+. ***************************************
+. 
+. logit discriminated2014 gdp2014_t education traditions income_a // Values for the variable "stayduration" were missing in this wave, therefore, we di
+> dn't include this control variable in this regression.
+
+Iteration 0:   log likelihood = -1135.7456  
+Iteration 1:   log likelihood = -1120.6056  
+Iteration 2:   log likelihood = -1120.3161  
+Iteration 3:   log likelihood =  -1120.316  
+Iteration 4:   log likelihood =  -1120.316  
+
+Logistic regression                                     Number of obs =  3,041
+                                                        LR chi2(4)    =  30.86
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -1120.316                              Pseudo R2     = 0.0136
+
+-----------------------------------------------------------------------------------
+discriminated2014 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        gdp2014_t |  -.0182505   .0038556    -4.73   0.000    -.0258072   -.0106937
+        education |   .0418465    .030605     1.37   0.172    -.0181383    .1018312
+       traditions |    .004694   .0403829     0.12   0.907     -.074455     .083843
+         income_a |   -.038424   .0219338    -1.75   0.080    -.0814134    .0045654
+            _cons |  -1.698953   .2499319    -6.80   0.000    -2.188811   -1.209096
+-----------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 3,041
+Model VCE: OIM
+
+Expression: Pr(discriminated2014), predict()
+dy/dx wrt:  gdp2014_t education traditions income_a
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   gdp2014_t |  -.0019543   .0004152    -4.71   0.000    -.0027681   -.0011405
+   education |    .004481   .0032781     1.37   0.172    -.0019439     .010906
+  traditions |   .0005026   .0043243     0.12   0.907    -.0079728    .0089781
+    income_a |  -.0041145   .0023498    -1.75   0.080    -.0087201     .000491
+------------------------------------------------------------------------------
+
+. est store m_2014
+
+. 
+. margins, at(gdp2014_t=(0(5)125))
+
+Predictive margins                                       Number of obs = 3,041
+Model VCE: OIM
+
+Expression: Pr(discriminated2014), predict()
+1._at:  gdp2014_t =   0
+2._at:  gdp2014_t =   5
+3._at:  gdp2014_t =  10
+4._at:  gdp2014_t =  15
+5._at:  gdp2014_t =  20
+6._at:  gdp2014_t =  25
+7._at:  gdp2014_t =  30
+8._at:  gdp2014_t =  35
+9._at:  gdp2014_t =  40
+10._at: gdp2014_t =  45
+11._at: gdp2014_t =  50
+12._at: gdp2014_t =  55
+13._at: gdp2014_t =  60
+14._at: gdp2014_t =  65
+15._at: gdp2014_t =  70
+16._at: gdp2014_t =  75
+17._at: gdp2014_t =  80
+18._at: gdp2014_t =  85
+19._at: gdp2014_t =  90
+20._at: gdp2014_t =  95
+21._at: gdp2014_t = 100
+22._at: gdp2014_t = 105
+23._at: gdp2014_t = 110
+24._at: gdp2014_t = 115
+25._at: gdp2014_t = 120
+26._at: gdp2014_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1557412   .0099001    15.73   0.000     .1363375    .1751449
+          2  |    .144133   .0078759    18.30   0.000     .1286965    .1595696
+          3  |   .1332525   .0065585    20.32   0.000     .1203981    .1461069
+          4  |   .1230743    .006023    20.43   0.000     .1112695    .1348792
+          5  |    .113571   .0061615    18.43   0.000     .1014946    .1256473
+          6  |    .104713   .0067078    15.61   0.000     .0915659    .1178601
+          7  |   .0964702   .0074144    13.01   0.000     .0819381    .1110022
+          8  |   .0888112   .0081306    10.92   0.000     .0728756    .1047469
+          9  |   .0817049   .0087808     9.30   0.000     .0644948     .098915
+         10  |   .0751199    .009332     8.05   0.000     .0568294    .0934103
+         11  |   .0690253   .0097731     7.06   0.000     .0498704    .0881802
+         12  |    .063391    .010104     6.27   0.000     .0435874    .0831945
+         13  |   .0581875   .0103307     5.63   0.000     .0379396    .0784354
+         14  |   .0533866   .0104618     5.10   0.000     .0328818    .0738914
+         15  |    .048961   .0105071     4.66   0.000     .0283675    .0695546
+         16  |   .0448847   .0104768     4.28   0.000     .0243506    .0654189
+         17  |    .041133   .0103809     3.96   0.000     .0207869    .0614791
+         18  |   .0376823   .0102288     3.68   0.000     .0176343    .0577304
+         19  |   .0345106   .0100294     3.44   0.001     .0148533    .0541679
+         20  |    .031597   .0097909     3.23   0.001     .0124072    .0507868
+         21  |   .0289219   .0095206     3.04   0.002      .010262    .0475819
+         22  |   .0264671    .009225     2.87   0.004     .0083864    .0445478
+         23  |   .0242153   .0089101     2.72   0.007     .0067518    .0416788
+         24  |   .0221508    .008581     2.58   0.010     .0053323    .0389693
+         25  |   .0202585   .0082423     2.46   0.014     .0041039    .0364132
+         26  |   .0185248   .0078979     2.35   0.019     .0030453    .0340044
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin 2014",
+>  size(medlarge)) legend(off) saving(gdp2014_discriminated2014_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp2014_t
+file gdp2014_discriminated2014_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.9: analysis over survey year 2016
+. ***************************************
+. 
+. logit discriminated2016 gdp2016_t education traditions income_a // Values for the variable "stayduration" were missing in this wave, therefore, we di
+> dn't include this control variable in this regression.
+
+Iteration 0:   log likelihood =  -1192.293  
+Iteration 1:   log likelihood = -1152.8359  
+Iteration 2:   log likelihood = -1150.1363  
+Iteration 3:   log likelihood = -1150.1307  
+Iteration 4:   log likelihood = -1150.1307  
+
+Logistic regression                                     Number of obs =  3,264
+                                                        LR chi2(4)    =  84.32
+                                                        Prob > chi2   = 0.0000
+Log likelihood = -1150.1307                             Pseudo R2     = 0.0354
+
+-----------------------------------------------------------------------------------
+discriminated2016 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+        gdp2016_t |  -.0341258    .004627    -7.38   0.000    -.0431945    -.025057
+        education |   -.026816   .0298723    -0.90   0.369    -.0853646    .0317326
+       traditions |   .0695178   .0418066     1.66   0.096    -.0124216    .1514572
+         income_a |   .0007338    .022137     0.03   0.974     -.042654    .0441216
+            _cons |  -1.742119   .2549811    -6.83   0.000    -2.241872   -1.242365
+-----------------------------------------------------------------------------------
+
+. margins, dydx(*)
+
+Average marginal effects                                 Number of obs = 3,264
+Model VCE: OIM
+
+Expression: Pr(discriminated2016), predict()
+dy/dx wrt:  gdp2016_t education traditions income_a
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   gdp2016_t |  -.0035027   .0004827    -7.26   0.000    -.0044488   -.0025566
+   education |  -.0027524   .0030664    -0.90   0.369    -.0087624    .0032576
+  traditions |   .0071353   .0042924     1.66   0.096    -.0012776    .0155483
+    income_a |   .0000753   .0022722     0.03   0.974     -.004378    .0045286
+------------------------------------------------------------------------------
+
+. est store m_2016
+
+. 
+. margins, at(gdp2016_t=(0(5)125))
+
+Predictive margins                                       Number of obs = 3,264
+Model VCE: OIM
+
+Expression: Pr(discriminated2016), predict()
+1._at:  gdp2016_t =   0
+2._at:  gdp2016_t =   5
+3._at:  gdp2016_t =  10
+4._at:  gdp2016_t =  15
+5._at:  gdp2016_t =  20
+6._at:  gdp2016_t =  25
+7._at:  gdp2016_t =  30
+8._at:  gdp2016_t =  35
+9._at:  gdp2016_t =  40
+10._at: gdp2016_t =  45
+11._at: gdp2016_t =  50
+12._at: gdp2016_t =  55
+13._at: gdp2016_t =  60
+14._at: gdp2016_t =  65
+15._at: gdp2016_t =  70
+16._at: gdp2016_t =  75
+17._at: gdp2016_t =  80
+18._at: gdp2016_t =  85
+19._at: gdp2016_t =  90
+20._at: gdp2016_t =  95
+21._at: gdp2016_t = 100
+22._at: gdp2016_t = 105
+23._at: gdp2016_t = 110
+24._at: gdp2016_t = 115
+25._at: gdp2016_t = 120
+26._at: gdp2016_t = 125
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .1749982   .0106051    16.50   0.000     .1542125    .1957838
+          2  |   .1517497   .0077911    19.48   0.000     .1364793      .16702
+          3  |   .1310951   .0062393    21.01   0.000     .1188663    .1433239
+          4  |   .1128746   .0058445    19.31   0.000     .1014196    .1243296
+          5  |   .0969016   .0061155    15.85   0.000     .0849155    .1088877
+          6  |   .0829755   .0065593    12.65   0.000     .0701195    .0958315
+          7  |   .0708922   .0069238    10.24   0.000     .0573218    .0844625
+          8  |   .0604513   .0071257     8.48   0.000     .0464851    .0744174
+          9  |    .051462   .0071578     7.19   0.000      .037433     .065491
+         10  |   .0437466   .0070417     6.21   0.000      .029945    .0575481
+         11  |   .0371421    .006808     5.46   0.000     .0237985    .0504856
+         12  |   .0315014   .0064875     4.86   0.000     .0187862    .0442167
+         13  |   .0266934   .0061077     4.37   0.000     .0147226    .0386642
+         14  |   .0226019   .0056917     3.97   0.000     .0114463    .0337575
+         15  |   .0191251   .0052584     3.64   0.000     .0088188    .0294313
+         16  |   .0161741   .0048221     3.35   0.001     .0067229    .0256253
+         17  |   .0136721   .0043939     3.11   0.002     .0050602    .0222839
+         18  |   .0115525   .0039814     2.90   0.004      .003749    .0193559
+         19  |   .0097582   .0035902     2.72   0.007     .0027216    .0167948
+         20  |   .0082402   .0032235     2.56   0.011     .0019223    .0145582
+         21  |   .0069567   .0028833     2.41   0.016     .0013055     .012608
+         22  |   .0058719   .0025704     2.28   0.022     .0008341    .0109098
+         23  |   .0049555   .0022845     2.17   0.030      .000478    .0094329
+         24  |   .0041814   .0020248     2.07   0.039     .0002128      .00815
+         25  |   .0035278   .0017903     1.97   0.049     .0000189    .0070368
+         26  |   .0029761   .0015794     1.88   0.060    -.0001195    .0060717
+------------------------------------------------------------------------------
+
+. marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita of coun
+> try of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origin 2016",
+>  size(medlarge)) legend(off) saving(gdp2016_discriminated2016_AME.gph, replace)
+
+Variables that uniquely identify margins: gdp2016_t
+file gdp2016_discriminated2016_AME.gph saved
+
+. webdoc graph, as(svg)
+(webdoc not initialized; nothing to do)
+
+. 
+. 
+. * 2.1.10: analysis over survey year 2018
+. ***************************************
+. 
+. /*
+> We intended to do the following logistic regression analysis for survey year 2018 as well but we weren't successful.
+> 
+>         logit discriminated2018 gdp2018_t education traditions income_a // Values for the variable "stayduration" were missing in this wave, therefor
+> e, we didn't include this control variable in this regression.
+>         margins, dydx(*)
+>         
+>         margins, at(gdp2018_t=(0(5)125))        
+>         marginsplot, recast(line) recastci(rarea) xlabel(0(25)125) ylabel(0(0.1)0.3) ytitle(Probability to feel discriminated) xtitle("GDP per capita
+>  of country of origin (in 1000 $)") title("Discrimination of Immigrants", color(black) size(medlarge)) subtitle("depending on GDP of country of origi
+> n 2018", size(medlarge)) legend(off) saving(gdp2018_discriminated2018_AME.gph, replace)
+>         webdoc graph, as(svg)
+> 
+> 
+> The problem was that there were probably no observations for immigrants that had both a value for the self-perceived
+> level of discrimination (discminated2018) and for the GDP per capita of their country of origin (gdp2018_t).
+> This could be the case because maybe none of the immigrants answered the question wheater thyy feel discriminated or not.
+> */
+. 
+. 
+. * 2.1.11: 
+. ***************************************
+. 
+. esttab m_obverall m_2002 m_2004 m_2006 m_2008 m_2010 m_2012 m_2014 m_2016, b star
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+> -----
+                      (1)             (2)             (3)             (4)             (5)             (6)             (7)             (8)             (
+> 9)   
+             discrimina~d    discrim~2002    discrim~2004    discrim~2006    discrim~2008    discrim~2010    discrim~2012    discrim~2014    discrim~20
+> 16   
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+> -----
+main                                                                                                                                                   
+>      
+gdp_t             -0.0427***                                                                                                                           
+>      
+                 (-13.67)                                                                                                                              
+>      
+
+education        -0.00956         -0.0575          0.0120         -0.0393         0.00169         0.00934          0.0602*         0.0418         -0.02
+> 68   
+                  (-0.53)         (-1.07)          (0.23)         (-0.80)          (0.05)          (0.31)          (2.09)          (1.37)         (-0.9
+> 0)   
+
+traditions         0.0364         0.00372           0.123         -0.0186         0.00860           0.131**        0.0479         0.00469          0.06
+> 95   
+                   (1.42)          (0.06)          (1.60)         (-0.26)          (0.18)          (2.92)          (1.23)          (0.12)          (1.6
+> 6)   
+
+1.staydura~n            0               0               0               0               0                                                              
+>      
+                      (.)             (.)             (.)             (.)             (.)                                                              
+>      
+
+2.staydura~n       -0.258          -0.906          -0.940           0.483          -0.389                                                              
+>      
+                  (-0.83)         (-1.19)         (-1.28)          (1.64)         (-0.70)                                                              
+>      
+
+3.staydura~n       -0.347          -1.205          -0.902           1.043***       -0.478                                                              
+>      
+                  (-1.12)         (-1.57)         (-1.22)          (4.23)         (-0.87)                                                              
+>      
+
+4.staydura~n       -0.635*         -1.062          -1.520*          0.320          -0.559                                                              
+>      
+                  (-2.07)         (-1.42)         (-2.08)          (1.34)         (-1.03)                                                              
+>      
+
+5.staydura~n       -0.849**        -1.814*         -1.887**             0          -0.990                                                              
+>      
+                  (-2.82)         (-2.47)         (-2.61)             (.)         (-1.87)                                                              
+>      
+
+essround            0.140***                                                                                                                           
+>      
+                   (4.68)                                                                                                                              
+>      
+
+gdp2002_t                         -0.0318***                                                                                                           
+>      
+                                  (-3.96)                                                                                                              
+>      
+
+income_t                         -0.00340        -0.00137        -0.00218                                                                              
+>      
+                                  (-0.86)         (-0.39)         (-0.57)                                                                              
+>      
+
+gdp2004_t                                         -0.0432***                                                                                           
+>      
+                                                  (-5.42)                                                                                              
+>      
+
+gdp2006_t                                                         -0.0489***                                                                           
+>      
+                                                                  (-5.49)                                                                              
+>      
+
+gdp2008_t                                                                         -0.0364***                                                           
+>      
+                                                                                  (-6.15)                                                              
+>      
+
+income_a                                                                         -0.00572         -0.0415         -0.0199         -0.0384        0.0007
+> 34   
+                                                                                  (-0.23)         (-1.81)         (-0.96)         (-1.75)          (0.0
+> 3)   
+
+gdp2010_t                                                                                         -0.0308***                                           
+>      
+                                                                                                  (-5.97)                                              
+>      
+
+gdp2012_t                                                                                                         -0.0312***                           
+>      
+                                                                                                                  (-6.90)                              
+>      
+
+gdp2014_t                                                                                                                         -0.0183***           
+>      
+                                                                                                                                  (-4.73)              
+>      
+
+gdp2016_t                                                                                                                                         -0.03
+> 41***
+                                                                                                                                                  (-7.3
+> 8)   
+
+_cons              -1.232***      -0.0785          -0.630          -1.503***       -0.563          -2.182***       -1.998***       -1.699***       -1.7
+> 42***
+                  (-3.56)         (-0.09)         (-0.79)         (-3.69)         (-0.93)         (-8.12)         (-8.24)         (-6.80)         (-6.8
+> 3)   
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+> -----
+N                    8367            1388            1315            1264            2156            3472            3602            3041            32
+> 64   
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+> -----
+t statistics in parentheses
+* p<0.05, ** p<0.01, *** p<0.001
+
+. 
+. *combined graph
+. graph combine "gdp2002_discriminated2002_AME" "gdp2004_discriminated2004_AME" "gdp2006_discriminated2006_AME" "gdp2008_discriminated2008_AME" "gdp201
+> 0_discriminated2010_AME" "gdp2012_discriminated2012_AME" "gdp2014_discriminated2014_AME" "gdp2016_discriminated2016_AME", commonscheme
+
+. 
+. 
+. *2.2 descriptive analysis of peoples attitudes towards immigrants: variables related to economic treath hypothesis
+. ******************************************************************************************************************
+. 
+. /*
+> Besides the immigrants' perspective on self-perceived discrimination based on GDP per capita
+> and other (control) variables, we wanted to test the country of receiving's perspective on
+> their attitudes towards immigrant's based on their countries of origin's GDP's, and based
+> on other aspects, such as their level of education. Into this descriptive analysis, we tried
+> to include both variables that might induce discrimination based on perceived economic threats
+> and also variables that might induce discrimination based on perceived cultural threats.
+> */
+. 
+. 
+. * 2.2.1: education qualification of immigrants - variable "educationqualification"       
+. **********************************************************************************
+. 
+. sum educationqualification, detail
+
+      RECODE of qfimedu (Qualification for immigration:
+               good educational qualification
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            2              0       Obs              80,950
+25%            5              0       Sum of wgt.      80,950
+
+50%            7                      Mean           6.269759
+                        Largest       Std. dev.      2.704023
+75%            8             10
+90%           10             10       Variance       7.311743
+95%           10             10       Skewness      -.6274174
+99%           10             10       Kurtosis       2.756394
+
+. /*
+> 
+>       RECODE of qfimedu (Qualification for immigration:
+>                good educational qualification
+> -------------------------------------------------------------
+>       Percentiles      Smallest
+>  1%            0              0
+>  5%            0              0
+> 10%            2              0       Obs              80,950
+> 25%            5              0       Sum of wgt.      80,950
+> 
+> 50%            7                      Mean           6.269759
+>                         Largest       Std. dev.      2.704023
+> 75%            8             10
+> 90%           10             10       Variance       7.311743
+> 95%           10             10       Skewness      -.6274174
+> 99%           10             10       Kurtosis       2.756394
+> 
+> */
+. 
+. histogram educationqualification, discrete width(0.5) percent fcolor(navy%90) lcolor(navy*1.1) ytitle("Percentage", margin(medsmall)) ylabel(0(5)20, 
+> labsize(medium) labcolor(black) grid glcolor(ebblue%20) glpattern(solid)) xtitle("") xlabel( 0 "0" 1 2 3 4 5 6 7 8 9 10 "10") title("Immigrants' Educ
+> ational Qualification") subtitle("How important do you regard Immigrants' Qualification of Education?") note("ESS data", span) legend(on order(0 " 0 
+> extremely unimportant" 10 "10 extremely important") stack cols(2) rowgap(medsmall) colgap(medsmall)) graphregion(fcolor(white) ifcolor(white)) saving
+> (educationqualification.gph, replace)
+(start=0, width=.5)
+file educationqualification.gph saved
+
+. 
+. /*
+> graph box educationqualification, ytitle("") title("Immigrants' Educational Qualification") subtitle("How important do you regard Immigrants' Qualifi
+> cation of Education?") note("ESS data", span) legend(on order(0 " 0 extremely unimportant" 10 "10 extremely important") stack cols(2) rowgap(medsmall
+> ) colgap(medsmall)) graphregion(fcolor(white) ifcolor(white)) saving(educationqualification.gph, replace)
+> */
+. 
+. * 2.2.2: immigrants' workskills needed in country - variable "workskillsneeded"  
+. *******************************************************************************
+. 
+. sum workskillsneeded, detail
+
+      RECODE of qfimwsk (Qualification for immigration:
+               work skills needed in country)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            2              0       Obs              81,111
+25%            5              0       Sum of wgt.      81,111
+
+50%            7                      Mean            6.67632
+                        Largest       Std. dev.      2.777443
+75%            9             10
+90%           10             10       Variance       7.714192
+95%           10             10       Skewness      -.8639507
+99%           10             10       Kurtosis       3.038279
+
+. /*
+>       
+>           RECODE of qfimwsk (Qualification for immigration:
+>                work skills needed in country)
+> -------------------------------------------------------------
+>       Percentiles      Smallest
+>  1%            0              0
+>  5%            0              0
+> 10%            2              0       Obs              81,111
+> 25%            5              0       Sum of wgt.      81,111
+> 
+> 50%            7                      Mean            6.67632
+>                         Largest       Std. dev.      2.777443
+> 75%            9             10
+> 90%           10             10       Variance       7.714192
+> 95%           10             10       Skewness      -.8639507
+> 99%           10             10       Kurtosis       3.038279
+> 
+> */
+. 
+. histogram workskillsneeded, discrete width(0.5) percent fcolor(navy%90) lcolor(navy*1.1) ytitle("Percentage", margin(medsmall)) ylabel(0(5)20, labsiz
+> e(medium) labcolor(black) grid glcolor(ebblue%20) glpattern(solid)) xtitle("") xlabel( 0 "0" 1 2 3 4 5 6 7 8 9 10 "10") title("Immigrants' Workskills
+> ") subtitle("How important do you regard Immigrants' Workskills?") note("ESS data", span) legend(on order(0 " 0 extremely unimportant" 10 "10 extreme
+> ly important") stack cols(2) rowgap(medsmall) colgap(medsmall)) graphregion(fcolor(white) ifcolor(white)) saving(workskillsneeded.gph, replace) name(
+> workskills, replace)
+(start=0, width=.5)
+file workskillsneeded.gph saved
+
+. 
+. 
+. * 2.2.3: immigrants endangering jobs? - variable "endangerjobs"  
+. ***************************************************************
+. 
+. sum endangerjobs, detail
+
+       RECODE of imtcjob (Immigrants take jobs away in
+                 country or create new jobs)
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            1              0       Obs              79,192
+25%            3              0       Sum of wgt.      79,192
+
+50%            5                      Mean           4.634887
+                        Largest       Std. dev.      2.303727
+75%            6             10
+90%            8             10       Variance       5.307158
+95%            8             10       Skewness      -.1816665
+99%           10             10       Kurtosis       2.789307
+
+. 
+. /*
+>        RECODE of imtcjob (Immigrants take jobs away in
+>                  country or create new jobs)
+> -------------------------------------------------------------
+>       Percentiles      Smallest
+>  1%            0              0
+>  5%            0              0
+> 10%            1              0       Obs              79,192
+> 25%            3              0       Sum of wgt.      79,192
+> 
+> 50%            5                      Mean           4.634887
+>                         Largest       Std. dev.      2.303727
+> 75%            6             10
+> 90%            8             10       Variance       5.307158
+> 95%            8             10       Skewness      -.1816665
+> 99%           10             10       Kurtosis       2.789307
+> 
+> */
+. 
+. histogram endangerjobs, discrete width(0.5) percent fcolor(navy%90) lcolor(navy*1.1) ytitle("Percentage", margin(medsmall)) ylabel(0(5)35, labsize(me
+> dium) labcolor(black) grid glcolor(ebblue%20) glpattern(solid)) xtitle("") xlabel( 0 "0" 1 2 3 4 5 6 7 8 9 10 "10") title("Do you see Jobs threatened
+>  by Immigrants?") note("ESS data", span) legend(on order(0 " 0 Immigrants take Jobs away" 10 "10 Immigrants create new Jobs") stack cols(2) rowgap(me
+> dsmall) colgap(medsmall)) graphregion(fcolor(white) ifcolor(white)) saving(endangerjobs.gph, replace) name(endangerjobs, replace)
+(start=0, width=.5)
+file endangerjobs.gph saved
+
+. 
+. 
+. * 2.2.4: immigrants take out more or put in more? - variable "freeloading"       
+. **************************************************************************
+. 
+. sum freeloading, detail
+
+      RECODE of imbleco (Taxes and services: immigrants
+               take out more than they put in
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            1              0       Obs              77,423
+25%            3              0       Sum of wgt.      77,423
+
+50%            5                      Mean           4.342934
+                        Largest       Std. dev.      2.223503
+75%            5             10
+90%            7             10       Variance       4.943966
+95%            8             10       Skewness       .0043707
+99%           10             10       Kurtosis       2.830929
+
+. 
+. /*
+>       RECODE of imbleco (Taxes and services: immigrants
+>                take out more than they put in
+> -------------------------------------------------------------
+>       Percentiles      Smallest
+>  1%            0              0
+>  5%            0              0
+> 10%            1              0       Obs              77,423
+> 25%            3              0       Sum of wgt.      77,423
+> 
+> 50%            5                      Mean           4.342934
+>                         Largest       Std. dev.      2.223503
+> 75%            5             10
+> 90%            7             10       Variance       4.943966
+> 95%            8             10       Skewness       .0043707
+> 99%           10             10       Kurtosis       2.830929
+> 
+> */
+. 
+. histogram freeloading, discrete width(0.5) percent fcolor(navy%90) lcolor(navy*1.1) ytitle("Percentage", margin(medsmall)) ylabel(0(5)30, labsize(med
+> ium) labcolor(black) grid glcolor(ebblue%20) glpattern(solid)) xtitle("") xlabel( 0 "0" 1 2 3 4 5 6 7 8 9 10 "10") title("Taxes and Services") subtit
+> le("Do you regard Immigrants to take out more than they put in?") note("ESS data", span) legend(on order(0 " 0 generally take out more" 10 "10 genera
+> lly put in more") stack cols(2) rowgap(medsmall) colgap(medsmall)) graphregion(fcolor(white) ifcolor(white)) saving(freeloading.gph, replace) name(fr
+> eeloading, replace)
+(start=0, width=.5)
+file freeloading.gph saved
+
+. 
+. 
+. * 2.2.5: Allow many/few immigrants depending on country's welfare - variables "imrcntr" & "imrcntr"
+. **************************************************************************
+. 
+. /*
+> For this last descriptive analysis we need to use a different ESS dataset.
+> The reason for this is that one of the variables needed below, "imrcntr",
+> was not listed on the download page of the ESS website, where we downloaded
+> all data we needed. We were only able to access the data of this variable
+> by downloading the whole dataset of the first survey wave (whithout specifying
+> just those variables we actually needed). The downloaded dataset that includes
+> all variables of the first wave is called "ESS1e06_6.dta".
+> */
+. 
+. use ESS1e06_6.dta, clear
+
+. 
+. fre impcntr // imrcntr: Allow many/few immigrants from richer countries outside Europe
+
+impcntr -- Allow many/few immigrants from poorer countries outside Europe
+-----------------------------------------------------------------------------------------
+                                            |      Freq.    Percent      Valid       Cum.
+--------------------------------------------+--------------------------------------------
+Valid   1  Allow many to come and live here |       4323      10.21      10.76      10.76
+        2  Allow some                       |      15867      37.46      39.49      50.25
+        3  Allow a few                      |      15370      36.29      38.25      88.50
+        4  Allow none                       |       4619      10.90      11.50     100.00
+        Total                               |      40179      94.85     100.00           
+Missing .b Refusal                          |         70       0.17                      
+        .c Don't know                       |       2017       4.76                      
+        .d No answer                        |         93       0.22                      
+        Total                               |       2180       5.15                      
+Total                                       |      42359     100.00                      
+-----------------------------------------------------------------------------------------
+
+. fre imrcntr // impcntr: Allow many/few immigrants from poorer countries outside Europe
+
+imrcntr -- Allow many/few immigrants from richer countries outside Europe
+-----------------------------------------------------------------------------------------
+                                            |      Freq.    Percent      Valid       Cum.
+--------------------------------------------+--------------------------------------------
+Valid   1  Allow many to come and live here |       5129      12.11      12.81      12.81
+        2  Allow some                       |      16283      38.44      40.68      53.49
+        3  Allow a few                      |      14059      33.19      35.12      88.62
+        4  Allow none                       |       4556      10.76      11.38     100.00
+        Total                               |      40027      94.49     100.00           
+Missing .b Refusal                          |         60       0.14                      
+        .c Don't know                       |       2170       5.12                      
+        .d No answer                        |        102       0.24                      
+        Total                               |       2332       5.51                      
+Total                                       |      42359     100.00                      
+-----------------------------------------------------------------------------------------
+
+. 
+. * generating new variables for illustration:
+. 
+. recode impcntr (1=1 "many") (2=2 "some") (3=3 "few") (4=4 "none") (else=.), gen(poorimmigrants) 
+(2180 differences between impcntr and poorimmigrants)
+
+. recode imrcntr (1=1 "many") (2=2 "some") (3=3 "few") (4=4 "none") (else=.), gen(richimmigrants) 
+(2332 differences between imrcntr and richimmigrants)
+
+. 
+. fre poorimmigrants
+
+poorimmigrants -- RECODE of impcntr (Allow many/few immigrants from poorer countries outside Europ
+------------------------------------------------------------
+               |      Freq.    Percent      Valid       Cum.
+---------------+--------------------------------------------
+Valid   1 many |       4323      10.21      10.76      10.76
+        2 some |      15867      37.46      39.49      50.25
+        3 few  |      15370      36.29      38.25      88.50
+        4 none |       4619      10.90      11.50     100.00
+        Total  |      40179      94.85     100.00           
+Missing .      |       2180       5.15                      
+Total          |      42359     100.00                      
+------------------------------------------------------------
+
+. fre richimmigrants
+
+richimmigrants -- RECODE of imrcntr (Allow many/few immigrants from richer countries outside Europ
+------------------------------------------------------------
+               |      Freq.    Percent      Valid       Cum.
+---------------+--------------------------------------------
+Valid   1 many |       5129      12.11      12.81      12.81
+        2 some |      16283      38.44      40.68      53.49
+        3 few  |      14059      33.19      35.12      88.62
+        4 none |       4556      10.76      11.38     100.00
+        Total  |      40027      94.49     100.00           
+Missing .      |       2332       5.51                      
+Total          |      42359     100.00                      
+------------------------------------------------------------
+
+. 
+. 
+. * illustration of the two variables' distributions:
+. 
+. gen richimmigrantsplus = richimmigrants + 0.18
+(2,332 missing values generated)
+
+. gen poorimmigrantsminus = poorimmigrants - 0.18
+(2,180 missing values generated)
+
+. 
+. twoway histogram richimmigrantsplus if poorimmigrants !=., /// Variable 1
+>  percent discrete  barwidth(0.3) /// 
+>          fcolor(navy) lcolor(navy*1.1) ///
+>          ylabel(0(5)45, gmax glcolor(emidblue*0.2)) yscale(extend) ///
+>          xlabel( 1 "many" 2 "some" 3 "few" 4 "none") ///
+>          graphregion(color(white)) plotregion(color(white)) bgcolor(white) ///
+>          title("Immigrants from richer vs. immigrants from poorer countries", size(medlarge)) ///
+>          subtitle("How many immigrants from outside europe do people allow?") ///
+>          ytitle("Percentage", margin(small)) /// 
+>          note("ESS data, 2002", span)  ///
+>          legend(label(1 "rich countries") label(2 "poor countries")) ///
+>          || histogram  poorimmigrantsminus if richimmigrants != ., /// Variable 2
+>          percent discrete  barwidth(0.3)  fcolor(navy*0.5) lcolor(navy*0.55) ///
+>          saving(poorimmigrantsvsrichimmigrants.gph, replace)
+file poorimmigrantsvsrichimmigrants.gph saved
+
+.          
+. * comparing the means of the two variables using a paired-samples t-test:
+. ttest impcntr == imrcntr
+
+Paired t test
+------------------------------------------------------------------------------
+Variable |     Obs        Mean    Std. err.   Std. dev.   [95% conf. interval]
+---------+--------------------------------------------------------------------
+ impcntr |  39,821    2.502097    .0041748    .8330967    2.493914     2.51028
+ imrcntr |  39,821    2.450591    .0042833    .8547448    2.442196    2.458987
+---------+--------------------------------------------------------------------
+    diff |  39,821    .0515055    .0033476    .6680136    .0449442    .0580668
+------------------------------------------------------------------------------
+     mean(diff) = mean(impcntr - imrcntr)                         t =  15.3859
+ H0: mean(diff) = 0                              Degrees of freedom =    39820
+
+ Ha: mean(diff) < 0           Ha: mean(diff) != 0           Ha: mean(diff) > 0
+ Pr(T < t) = 1.0000         Pr(|T| > |t|) = 0.0000          Pr(T > t) = 0.0000
+
+. 
+. /* 
+> This t-test was conducted on 39'821 survey participants to determine if they have in average different attitudes about allowing immigrants from poore
+> r versus richer countries than the one they live in.
+>  
+> Results showed that the mean attitude regarding immigrants of poorer countries was statistically significantly different from the mean attitude regar
+> ding immigrants of richer countries (t = 15.3859 with df=39820, p < 0.0001) at a significance level of 0.05.
+>  
+> A 95% confidence interval for the true difference in population means resulted in the interval of (0.0449442, 0.0580668).
+> 
+> One limitation of using the t-test here is that arguably the variables are not on an interval scale but rather an ordinal one. If we suppose that, th
+> e results of this test are not useful because the paired-samples t-test needs variables on an interval scale.
+> */
+. 
+. 
+. 
+. ***************
+. * Finalisation:
+. ***************
+. 
+. log close // closing the log-file
+      name:  <unnamed>
+       log:  /Users/silja/Desktop/Empirical Research Paper_19June22/DataAnalysis.log
+  log type:  text
+ closed on:  19 Jun 2022, 11:01:07
+-------------------------------------------------------------------------------------------------------------------------------------------------------
